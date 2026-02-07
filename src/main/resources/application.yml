@@ -3,13 +3,13 @@ server:
 
 spring:
   application:
-    name: manafoodproduct
+    name: fiap-x-microsservice-user
 
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: org.postgresql.Driver
 
   flyway:
     enabled: true
@@ -21,14 +21,14 @@ spring:
       ddl-auto: validate
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 logging:
   level:
     root: ${LOGGING_LEVEL_ROOT:INFO}
     org.springframework.web: ${LOGGING_LEVEL_SPRING:INFO}
     org.hibernate.SQL: ${LOGGING_LEVEL_SQL:INFO}
-    br.com.manafood: ${LOGGING_LEVEL_MANAFOOD:DEBUG}
+    br.com.fiapx.fiapxuser: ${LOGGING_LEVEL_FIAP_X_USER:DEBUG}
 
 management:
   endpoints:

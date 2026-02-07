@@ -7,9 +7,9 @@ CREATE TABLE users
     birth_date DATE                NOT NULL,
     phone      VARCHAR(20)         NOT NULL,
     role       INT                 NOT NULL,
-    created_at DATETIME            NOT NULL,
-    created_by BINARY(16)          NOT NULL,
-    updated_at DATETIME,
-    updated_by BINARY(16),
+    created_at TIMESTAMP           NOT NULL,
+    created_by BYTEA               NOT NULL,
+    updated_at TIMESTAMP,
+    updated_by BYTEA,
     deleted    BOOLEAN             NOT NULL DEFAULT FALSE
 );
