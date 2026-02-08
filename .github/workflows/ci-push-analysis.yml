@@ -1,4 +1,5 @@
-﻿﻿name: "[Etapa 0] Análise de Pushes"
+name: "[Etapa 0] Análise de Pushes"
+
 on:
   push:
     branches-ignore:
@@ -7,7 +8,6 @@ on:
 jobs:
   analise-de-pushes:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout código
         uses: actions/checkout@v4
@@ -47,3 +47,4 @@ jobs:
       - name: Parar e remover containers
         if: always()
         run: docker compose down -v
+
