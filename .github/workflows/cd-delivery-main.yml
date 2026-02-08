@@ -1,4 +1,4 @@
-﻿﻿name: "[Etapa 2] Entrega Contínua"
+﻿name: "[Etapa 2] Entrega Contínua"
 
 on:
   push:
@@ -169,3 +169,4 @@ jobs:
           DIGEST: ${{ steps.docker-build-and-push-image.outputs.digest }}
         run: |
           echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+
