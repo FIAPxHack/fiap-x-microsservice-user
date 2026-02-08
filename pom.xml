@@ -27,7 +27,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<kotlin.version>1.9.24</kotlin.version>
+		<kotlin.version>2.2.0</kotlin.version>
 		<java.version>17</java.version>
 		<mockk.version>1.13.13</mockk.version>
 		<cucumber.version>7.18.1</cucumber.version>
