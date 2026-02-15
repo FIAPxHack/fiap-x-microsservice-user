@@ -85,11 +85,7 @@ jobs:
           
           # Executa a análise Sonar via plugin Maven (usa propriedades do pom.xml)
           mvn -B -ntp sonar:sonar \
-            -Dsonar.host.url="$SONAR_HOST_URL" \
-            -Dsonar.login="$SONAR_TOKEN" \
-            -Dsonar.projectKey="FIAPxHack_fiap-x-microsservice-user" \
-            -Dsonar.organization="fiapxhack" \
-            -Dsonar.branch.name="${{ github.head_ref }}" \
+            -Dsonar.token="$SONAR_TOKEN" \
             -Dsonar.exclusions="**/target/**,**/*.class" \
             -Dsonar.coverage.jacoco.xmlReportPaths="target/site/jacoco/jacoco.xml"
 

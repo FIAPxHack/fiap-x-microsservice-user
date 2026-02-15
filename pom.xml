@@ -33,7 +33,7 @@
 		<cucumber.version>7.18.1</cucumber.version>
 		<testcontainers.version>1.19.3</testcontainers.version>
 
-		<!-- SonarQube Properties -->
+		<!-- SonarQube/SonarCloud Properties -->
 		<sonar.organization>fiapxhack</sonar.organization>
 		<sonar.projectKey>FIAPxHack_fiap-x-microsservice-user</sonar.projectKey>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
