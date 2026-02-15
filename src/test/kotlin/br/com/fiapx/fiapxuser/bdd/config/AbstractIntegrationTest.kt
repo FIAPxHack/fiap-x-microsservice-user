@@ -13,23 +13,31 @@ abstract class AbstractIntegrationTest {
 
     companion object {
         @Container
-        @JvmStatic
-        val postgresContainer: PostgreSQLContainer<*> = PostgreSQLContainer("postgres:16-alpine")
+        private val postgresContainer: PostgreSQLContainer<*> = PostgreSQLContainer("postgres:16-alpine")
             .withDatabaseName("testdb")
             .withUsername("testuser")
             .withPassword("testpass")
             .withReuse(true)
 
-        @DynamicPropertySource
+        private fun ensureContainerStarted() {
+            if (!postgresContainer.isRunning) {
+                postgresContainer.start()
+            }
+        }
+
         @JvmStatic
+        @DynamicPropertySource
         fun registerProperties(registry: DynamicPropertyRegistry) {
-            registry.add("spring.datasource.url", postgresContainer::getJdbcUrl)
-            registry.add("spring.datasource.username", postgresContainer::getUsername)
-            registry.add("spring.datasource.password", postgresContainer::getPassword)
-            registry.add("spring.datasource.driver-class-name") { "org.postgresql.Driver" }
-            registry.add("spring.jpa.hibernate.ddl-auto") { "validate" }
+            ensureContainerStarted()
+
+            registry.add("spring.datasource.url") { postgresContainer.jdbcUrl }
+            registry.add("spring.datasource.username") { postgresContainer.username }
+            registry.add("spring.datasource.password") { postgresContainer.password }
+//            registry.add("spring.datasource.driver-class-name") { "org.postgresql.Driver" }
+
+            registry.add("spring.jpa.hibernate.ddl-auto") { "none" }
             registry.add("spring.flyway.enabled") { "true" }
-            registry.add("spring.flyway.baseline-on-migrate") { "true" }
+            registry.add("spring.flyway.clean-disabled") { "false" }
         }
 
         init {
@@ -37,4 +45,3 @@ abstract class AbstractIntegrationTest {
         }
     }
 }
-

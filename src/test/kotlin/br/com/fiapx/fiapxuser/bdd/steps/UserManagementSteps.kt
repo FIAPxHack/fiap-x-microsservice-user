@@ -10,6 +10,7 @@ import br.com.fiapx.fiapxuser.application.usecase.queries.getall.GetAllUsersQuer
 import br.com.fiapx.fiapxuser.application.usecase.queries.getall.GetAllUsersUseCase
 import br.com.fiapx.fiapxuser.application.usecase.queries.getbyid.GetUserByIdQuery
 import br.com.fiapx.fiapxuser.application.usecase.queries.getbyid.GetUserByIdUseCase
+import br.com.fiapx.fiapxuser.bdd.config.CucumberSpringConfiguration
 import br.com.fiapx.fiapxuser.domain.common.Paged
 import br.com.fiapx.fiapxuser.domain.enums.UserRole
 import br.com.fiapx.fiapxuser.domain.model.User
@@ -24,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import java.time.LocalDate
 import java.util.*
 
-class UserManagementSteps {
+class UserManagementSteps: CucumberSpringConfiguration() {
 
     @Autowired
     private lateinit var createUserUseCase: CreateUserUseCase

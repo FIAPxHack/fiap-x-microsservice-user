@@ -1,9 +1,14 @@
 package br.com.fiapx.fiapxuser.bdd.config
 
 import io.cucumber.spring.CucumberContextConfiguration
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.web.server.LocalServerPort
 
 @CucumberContextConfiguration
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CucumberSpringConfiguration : AbstractIntegrationTest()
+class CucumberSpringConfiguration : AbstractIntegrationTest() {
+
+    @LocalServerPort
+    protected var port: Int = 0
+
+    protected fun getBaseUrl(): String = "http://localhost:$port"
+}
 
