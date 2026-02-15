@@ -61,8 +61,7 @@ Funcionalidade: Gerenciamento de Usuários
       | telefone        | 11954321098             |
       | role            | 2                       |
     Quando eu deletar o usuário
-    Então o usuário deve ser marcado como deletado
-    E o usuário deve ter a flag deleted como true
+    Então o usuário deletado
 
   Cenário: Listar todos os usuários com paginação
     Dado que existem os seguintes usuários cadastrados:

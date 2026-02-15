@@ -202,14 +202,9 @@ class UserManagementSteps: CucumberSpringConfiguration() {
         }
     }
 
-    @Então("o usuário deve ser marcado como deletado")
+    @Então("o usuário deletado")
     fun validarUsuarioDeletado() {
-        assertNotNull(foundUser)
-    }
-
-    @Então("o usuário deve ter a flag deleted como true")
-    fun validarFlagDeleted() {
-        assertTrue(foundUser?.deleted ?: false)
+        assertNull(foundUser)
     }
 
     @Dado("que existem os seguintes usuários cadastrados:")
