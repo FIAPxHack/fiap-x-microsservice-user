@@ -79,17 +79,19 @@ jobs:
       - name: Executar Análise SonarQube (Maven)
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_HOST_URL: https://sonarcloud.io
           SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
           SPRING_DATASOURCE_USERNAME: ${{ secrets.POSTGRES_USER }}
           SPRING_DATASOURCE_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         run: |
           # Executa build + testes com cobertura JaCoCo
           mvn -B -ntp clean verify
-          
-          # Executa a análise Sonar via plugin Maven (usa propriedades do pom.xml)
+
+          # Executa a análise Sonar via plugin Maven
           mvn -B -ntp sonar:sonar \
+            -Dsonar.host.url="$SONAR_HOST_URL" \
             -Dsonar.token="$SONAR_TOKEN" \
+            -Dsonar.login="$SONAR_TOKEN" \
             -Dsonar.exclusions="**/target/**,**/*.class" \
             -Dsonar.coverage.jacoco.xmlReportPaths="target/site/jacoco/jacoco.xml"
 
@@ -165,4 +167,3 @@ jobs:
           DIGEST: ${{ steps.docker-build-and-push-image.outputs.digest }}
         run: |
           echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
-
