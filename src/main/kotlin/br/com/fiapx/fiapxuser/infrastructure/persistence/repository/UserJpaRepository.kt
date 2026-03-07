@@ -20,4 +20,7 @@ interface UserJpaRepository : JpaRepository<UserJpaEntity, UUID> {
 
     @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM UserJpaEntity c WHERE c.id = :id AND c.deleted = false")
     fun existsByIdAndNotDeleted(id: UUID): Boolean
+
+    @Query("SELECT c FROM UserJpaEntity c WHERE c.email = :email AND c.deleted = false")
+    fun findByEmailAndNotDeleted(email: String): Optional<UserJpaEntity>
 }

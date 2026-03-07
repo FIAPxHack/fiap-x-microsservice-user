@@ -2,6 +2,7 @@ package br.com.fiapx.fiapxuser.adapter.mapper
 
 import br.com.fiapx.fiapxuser.adapter.request.commands.create.CreateUserRequest
 import br.com.fiapx.fiapxuser.adapter.request.commands.update.UpdateUserRequest
+import br.com.fiapx.fiapxuser.adapter.response.UserAuthResponse
 import br.com.fiapx.fiapxuser.adapter.response.UserResponse
 import br.com.fiapx.fiapxuser.application.usecase.commands.create.CreateUserCommand
 import br.com.fiapx.fiapxuser.application.usecase.commands.delete.DeleteUserCommand
@@ -60,4 +61,12 @@ object UserMapper {
             totalPages = categoriesPaged.totalPages
         )
     }
+
+    fun toAuthResponse(user: User): UserAuthResponse =
+        UserAuthResponse(
+            id = user.id,
+            email = user.email,
+            passwordHash = user.password,
+            role = user.role.name
+        )
 }
