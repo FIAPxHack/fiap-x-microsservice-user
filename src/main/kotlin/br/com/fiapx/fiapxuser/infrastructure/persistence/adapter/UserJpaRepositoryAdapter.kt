@@ -47,4 +47,10 @@ class UserJpaRepositoryAdapter(
         val exists = springDataRepository.existsByIdAndNotDeleted(id)
         return !exists
     }
+
+    override fun findByEmail(email: String): User? {
+        return springDataRepository.findByEmailAndNotDeleted(email)
+            .map { UserEntityMapper.toDomain(it) }
+            .orElse(null)
+    }
 }

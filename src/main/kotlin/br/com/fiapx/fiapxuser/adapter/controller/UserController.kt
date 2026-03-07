@@ -3,12 +3,15 @@ package br.com.fiapx.fiapxuser.adapter.controller
 import br.com.fiapx.fiapxuser.adapter.mapper.UserMapper
 import br.com.fiapx.fiapxuser.adapter.request.commands.create.CreateUserRequest
 import br.com.fiapx.fiapxuser.adapter.request.commands.update.UpdateUserRequest
+import br.com.fiapx.fiapxuser.adapter.response.UserAuthResponse
 import br.com.fiapx.fiapxuser.adapter.response.UserResponse
 import br.com.fiapx.fiapxuser.application.usecase.commands.create.CreateUserUseCase
 import br.com.fiapx.fiapxuser.application.usecase.commands.delete.DeleteUserUseCase
 import br.com.fiapx.fiapxuser.application.usecase.commands.update.UpdateUserUseCase
 import br.com.fiapx.fiapxuser.application.usecase.queries.getall.GetAllUsersQuery
 import br.com.fiapx.fiapxuser.application.usecase.queries.getall.GetAllUsersUseCase
+import br.com.fiapx.fiapxuser.application.usecase.queries.getbyemail.GetUserByEmailQuery
+import br.com.fiapx.fiapxuser.application.usecase.queries.getbyemail.GetUserByEmailUseCase
 import br.com.fiapx.fiapxuser.application.usecase.queries.getbyid.GetUserByIdQuery
 import br.com.fiapx.fiapxuser.application.usecase.queries.getbyid.GetUserByIdUseCase
 import br.com.fiapx.fiapxuser.domain.common.Paged
@@ -31,7 +34,8 @@ class UserController(
     private val updateUserUseCase: UpdateUserUseCase,
     private val deleteUserUseCase: DeleteUserUseCase,
     private val getUserByIdUseCase: GetUserByIdUseCase,
-    private val getAllUsersUseCase: GetAllUsersUseCase
+    private val getAllUsersUseCase: GetAllUsersUseCase,
+    private val getUserByEmailUseCase: GetUserByEmailUseCase
 ) {
     @PostMapping
     fun create(
@@ -78,5 +82,12 @@ class UserController(
     ): ResponseEntity<Paged<UserResponse>> {
         val users = getAllUsersUseCase.execute(GetAllUsersQuery(page, pageSize))
         return ResponseEntity.ok(UserMapper.toResponsePaged(users))
+    }
+
+    @GetMapping("/by-email/{email}")
+    fun getByEmail(@PathVariable email: String): ResponseEntity<UserAuthResponse> {
+        val user = getUserByEmailUseCase.execute(GetUserByEmailQuery(email))
+        return if (user != null) ResponseEntity.ok(UserMapper.toAuthResponse(user))
+        else ResponseEntity.notFound().build()
     }
 }

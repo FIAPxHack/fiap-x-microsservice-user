@@ -5,6 +5,7 @@ import br.com.fiapx.fiapxuser.application.usecase.commands.delete.DeleteUserUseC
 import br.com.fiapx.fiapxuser.application.usecase.queries.getbyid.GetUserByIdUseCase
 import br.com.fiapx.fiapxuser.application.usecase.commands.update.UpdateUserUseCase
 import br.com.fiapx.fiapxuser.application.usecase.queries.getall.GetAllUsersUseCase
+import br.com.fiapx.fiapxuser.application.usecase.queries.getbyemail.GetUserByEmailUseCase
 import br.com.fiapx.fiapxuser.domain.repository.UserRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -36,5 +37,10 @@ class UserUseCaseConfig(
     @Bean
     fun getAllUsersUseCase(): GetAllUsersUseCase {
         return GetAllUsersUseCase(userRepository)
+    }
+
+    @Bean
+    fun getUserByEmailUseCase(): GetUserByEmailUseCase {
+        return GetUserByEmailUseCase(userRepository)
     }
 }
