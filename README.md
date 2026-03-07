@@ -33,7 +33,7 @@ O **fiap-x-microsservice-user** é um microsserviço RESTful que gerencia o cicl
 
 ### Funcionalidades Principais
 
-- ✅ Criação de usuários com validação de dados
+- ✅ Busca de usuário por email (integração com microsserviço de autenticação)
 - ✅ Consulta de usuários (individual e paginada)
 - ✅ Atualização de dados de usuário
 - ✅ Exclusão lógica (soft delete) de usuários
@@ -185,13 +185,14 @@ Acesse: **http://localhost:8081/swagger-ui.html**
 
 ### Endpoints Principais
 
-| Método | Endpoint            | Descrição                    | Body                          |
-|--------|---------------------|------------------------------|-------------------------------|
-| POST   | `/api/users`        | Criar novo usuário           | `CreateUserRequest`           |
-| GET    | `/api/users`        | Listar todos (paginado)      | Query params: page, size      |
-| GET    | `/api/users/{id}`   | Buscar usuário por ID        | -                             |
-| PUT    | `/api/users/{id}`   | Atualizar usuário            | `UpdateUserRequest`           |
-| DELETE | `/api/users/{id}`   | Deletar usuário (soft)       | -                             |
+| Método | Endpoint                      | Descrição                    | Body                          |
+|--------|-------------------------------|------------------------------|-------------------------------|
+| POST   | `/api/users`                  | Criar novo usuário           | `CreateUserRequest`           |
+| GET    | `/api/users`                  | Listar todos (paginado)      | Query params: page, size      |
+| GET    | `/api/users/{id}`             | Buscar usuário por ID        | -                             |
+| GET    | `/api/users/by-email/{email}` | Buscar usuário por email     | -                             |
+| PUT    | `/api/users/{id}`             | Atualizar usuário            | `UpdateUserRequest`           |
+| DELETE | `/api/users/{id}`             | Deletar usuário (soft)       | -                             |
 
 ### Exemplos de Requisições
 
@@ -216,7 +217,7 @@ curl "http://localhost:8081/api/users?page=0&size=10"
 
 #### Buscar por ID
 ```bash
-curl http://localhost:8081/api/users/{uuid}
+curl http://localhost:8081/api/users/by-email/joao.silva@example.com
 ```
 
 #### Atualizar Usuário
