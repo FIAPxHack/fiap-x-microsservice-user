@@ -496,7 +496,7 @@ Para reportar bugs ou solicitar features:
 ---
 
 <div align="center">
-  
+
 **⭐ Se este projeto foi útil, considere dar uma estrela!**
 
 Made with ❤️ by FIAPxHack Team
