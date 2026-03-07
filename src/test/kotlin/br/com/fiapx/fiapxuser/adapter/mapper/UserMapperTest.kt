@@ -449,6 +449,103 @@ class UserMapperTest {
         }
     }
 
+    @Nested
+    @DisplayName("toAuthResponse")
+    inner class ToAuthResponse {
+
+        @Test
+        fun `deve converter User para UserAuthResponse corretamente`() {
+            // Arrange
+            val userId = UUID.randomUUID()
+            val user = createUser(
+                id = userId,
+                email = "joao@example.com",
+                password = "hashed_password",
+                role = UserRole.ADMIN
+            )
+
+            // Act
+            val response = UserMapper.toAuthResponse(user)
+
+            // Assert
+            assertEquals(userId, response.id)
+            assertEquals("joao@example.com", response.email)
+            assertEquals("hashed_password", response.passwordHash)
+            assertEquals("ADMIN", response.role)
+        }
+
+        @Test
+        fun `deve mapear campo password para passwordHash`() {
+            // Arrange
+            val user = createUser(password = "bcrypt_hash_value")
+
+            // Act
+            val response = UserMapper.toAuthResponse(user)
+
+            // Assert
+            assertEquals("bcrypt_hash_value", response.passwordHash)
+        }
+
+        @Test
+        fun `deve mapear role SYSTEM como string`() {
+            // Arrange
+            val user = createUser(role = UserRole.SYSTEM)
+
+            // Act
+            val response = UserMapper.toAuthResponse(user)
+
+            // Assert
+            assertEquals("SYSTEM", response.role)
+        }
+
+        @Test
+        fun `deve mapear role USER como string`() {
+            // Arrange
+            val user = createUser(role = UserRole.USER)
+
+            // Act
+            val response = UserMapper.toAuthResponse(user)
+
+            // Assert
+            assertEquals("USER", response.role)
+        }
+
+        @Test
+        fun `deve mapear role ADMIN como string`() {
+            // Arrange
+            val user = createUser(role = UserRole.ADMIN)
+
+            // Act
+            val response = UserMapper.toAuthResponse(user)
+
+            // Assert
+            assertEquals("ADMIN", response.role)
+        }
+
+        @Test
+        fun `deve retornar apenas campos necessarios para auth service`() {
+            // Arrange
+            val userId = UUID.randomUUID()
+            val user = createUser(
+                id = userId,
+                name = "Nome Completo",
+                email = "email@example.com",
+                password = "hash123",
+                phone = "11999999999",
+                role = UserRole.USER
+            )
+
+            // Act
+            val response = UserMapper.toAuthResponse(user)
+
+            // Assert
+            assertEquals(userId, response.id)
+            assertEquals("email@example.com", response.email)
+            assertEquals("hash123", response.passwordHash)
+            assertEquals("USER", response.role)
+        }
+    }
+
     // Helpers
     private fun createUser(
         id: UUID = UUID.randomUUID(),

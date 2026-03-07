@@ -7,6 +7,8 @@ import br.com.fiapx.fiapxuser.application.usecase.commands.delete.DeleteUserUseC
 import br.com.fiapx.fiapxuser.application.usecase.commands.update.UpdateUserUseCase
 import br.com.fiapx.fiapxuser.application.usecase.queries.getall.GetAllUsersQuery
 import br.com.fiapx.fiapxuser.application.usecase.queries.getall.GetAllUsersUseCase
+import br.com.fiapx.fiapxuser.application.usecase.queries.getbyemail.GetUserByEmailQuery
+import br.com.fiapx.fiapxuser.application.usecase.queries.getbyemail.GetUserByEmailUseCase
 import br.com.fiapx.fiapxuser.application.usecase.queries.getbyid.GetUserByIdQuery
 import br.com.fiapx.fiapxuser.application.usecase.queries.getbyid.GetUserByIdUseCase
 import br.com.fiapx.fiapxuser.domain.common.Paged
@@ -31,6 +33,7 @@ class UserControllerTest {
     private val deleteUserUseCase = mockk<DeleteUserUseCase>()
     private val getUserByIdUseCase = mockk<GetUserByIdUseCase>()
     private val getAllUsersUseCase = mockk<GetAllUsersUseCase>()
+    private val getUserByEmailUseCase = mockk<GetUserByEmailUseCase>()
 
     private lateinit var controller: UserController
 
@@ -41,7 +44,8 @@ class UserControllerTest {
             updateUserUseCase = updateUserUseCase,
             deleteUserUseCase = deleteUserUseCase,
             getUserByIdUseCase = getUserByIdUseCase,
-            getAllUsersUseCase = getAllUsersUseCase
+            getAllUsersUseCase = getAllUsersUseCase,
+            getUserByEmailUseCase = getUserByEmailUseCase
         )
     }
 
@@ -593,6 +597,127 @@ class UserControllerTest {
             assertEquals("Pedro", items[2].name)
             assertEquals(0, items[2].role) // SYSTEM
             verify(exactly = 1) { getAllUsersUseCase.execute(any()) }
+        }
+    }
+
+    @Nested
+    @DisplayName("GET /api/users/by-email/{email} - Get By Email")
+    inner class GetByEmailTests {
+
+        @Test
+        fun `deve retornar usuario quando encontrado por email e retornar 200 OK`() {
+            // Arrange
+            val email = "joao@example.com"
+            val user = createUser(
+                name = "João Silva",
+                email = email,
+                role = UserRole.USER
+            )
+
+            every { getUserByEmailUseCase.execute(GetUserByEmailQuery(email)) } returns user
+
+            // Act
+            val response = controller.getByEmail(email)
+
+            // Assert
+            assertEquals(HttpStatus.OK, response.statusCode)
+            assertNotNull(response.body)
+            assertEquals(user.id, response.body?.id)
+            assertEquals(email, response.body?.email)
+            assertEquals(user.password, response.body?.passwordHash)
+            assertEquals("USER", response.body?.role)
+            verify(exactly = 1) { getUserByEmailUseCase.execute(GetUserByEmailQuery(email)) }
+        }
+
+        @Test
+        fun `deve retornar 404 NOT FOUND quando usuario nao encontrado por email`() {
+            // Arrange
+            val email = "inexistente@example.com"
+
+            every { getUserByEmailUseCase.execute(GetUserByEmailQuery(email)) } returns null
+
+            // Act
+            val response = controller.getByEmail(email)
+
+            // Assert
+            assertEquals(HttpStatus.NOT_FOUND, response.statusCode)
+            assertNull(response.body)
+            verify(exactly = 1) { getUserByEmailUseCase.execute(GetUserByEmailQuery(email)) }
+        }
+
+        @Test
+        fun `deve passar query correto para o use case`() {
+            // Arrange
+            val email = "teste@example.com"
+            val user = createUser(email = email)
+            val querySlot = slot<GetUserByEmailQuery>()
+
+            every { getUserByEmailUseCase.execute(capture(querySlot)) } returns user
+
+            // Act
+            controller.getByEmail(email)
+
+            // Assert
+            assertEquals(email, querySlot.captured.email)
+            verify(exactly = 1) { getUserByEmailUseCase.execute(any()) }
+        }
+
+        @Test
+        fun `deve mapear password para passwordHash na resposta`() {
+            // Arrange
+            val email = "joao@example.com"
+            val user = createUser(email = email, password = "hashed_password_123")
+
+            every { getUserByEmailUseCase.execute(GetUserByEmailQuery(email)) } returns user
+
+            // Act
+            val response = controller.getByEmail(email)
+
+            // Assert
+            assertEquals("hashed_password_123", response.body?.passwordHash)
+            verify(exactly = 1) { getUserByEmailUseCase.execute(any()) }
+        }
+
+        @Test
+        fun `deve mapear role como nome do enum na resposta`() {
+            // Arrange
+            val email = "admin@example.com"
+            val user = createUser(email = email, role = UserRole.ADMIN)
+
+            every { getUserByEmailUseCase.execute(GetUserByEmailQuery(email)) } returns user
+
+            // Act
+            val response = controller.getByEmail(email)
+
+            // Assert
+            assertEquals("ADMIN", response.body?.role)
+            verify(exactly = 1) { getUserByEmailUseCase.execute(any()) }
+        }
+
+        @Test
+        fun `deve retornar resposta com formato correto para auth service`() {
+            // Arrange
+            val userId = UUID.randomUUID()
+            val email = "user@example.com"
+            val user = createUser(
+                id = userId,
+                email = email,
+                password = "bcrypt_hash",
+                role = UserRole.SYSTEM
+            )
+
+            every { getUserByEmailUseCase.execute(GetUserByEmailQuery(email)) } returns user
+
+            // Act
+            val response = controller.getByEmail(email)
+
+            // Assert
+            val body = response.body!!
+            assertEquals(userId, body.id)
+            assertEquals(email, body.email)
+            assertEquals("bcrypt_hash", body.passwordHash)
+            assertEquals("SYSTEM", body.role)
+            verify(exactly = 1) { getUserByEmailUseCase.execute(any()) }
         }
     }
 
