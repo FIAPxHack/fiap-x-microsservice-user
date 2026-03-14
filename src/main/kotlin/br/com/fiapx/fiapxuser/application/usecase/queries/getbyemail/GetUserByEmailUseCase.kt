@@ -24,7 +24,7 @@ class GetUserByEmailUseCase(
             return userFinded
 
         } catch (ex: DataAccessException) {
-            logger.error("$PREFIX Falha ao tentar encontrar o usuário do email ${query.email}")
+            logger.error("$PREFIX Falha ao tentar encontrar o usuário por email")
             throw Exception("$PREFIX Falha ao tentar encontrar o usuário do email ${query.email}", ex)
         }
     }

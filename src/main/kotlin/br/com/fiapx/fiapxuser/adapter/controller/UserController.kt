@@ -88,8 +88,11 @@ class UserController(
     }
 
     @GetMapping("/by-email/{email}")
-    fun getByEmail(@PathVariable @Email(message = "Formato de e-mail inválido") email: String): ResponseEntity<UserAuthResponse> {
-        val user = getUserByEmailUseCase.execute(GetUserByEmailQuery(email))
+    fun getByEmail(
+        @PathVariable @Email(message = "Formato de e-mail inválido") email: String
+    ): ResponseEntity<UserAuthResponse> {
+        val sanitizedEmail = email.trim().replace(Regex("[\\r\\n\\t]"), "")
+        val user = getUserByEmailUseCase.execute(GetUserByEmailQuery(sanitizedEmail))
         return if (user != null) ResponseEntity.ok(UserMapper.toAuthResponse(user))
         else ResponseEntity.notFound().build()
     }
