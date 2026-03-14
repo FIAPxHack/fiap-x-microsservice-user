@@ -41,6 +41,7 @@
 		<sonar.exclusions>**/target/**,**/*.class</sonar.exclusions>
 		<!-- Excluir arquivos "boilerplate"/infra da métrica de Coverage -->
 		<sonar.coverage.exclusions>
+			src/main/kotlin/br/com/fiapx/fiapxuser/infrastructure/config/MetricsConfig.kt,
 			src/main/kotlin/br/com/fiapx/fiapxuser/infrastructure/persistence/entity/BaseJpaEntity.kt,
 			src/main/kotlin/br/com/fiapx/fiapxuser/FiapXUserApplication.kt,
 			src/main/kotlin/br/com/fiapx/fiapxuser/infrastructure/config/RepositoryConfig.kt,
