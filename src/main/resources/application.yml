@@ -18,7 +18,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -27,21 +27,38 @@ spring:
           lob:
             non_contextual_creation: true
 
+# Logging
 logging:
+  file:
+    name: ${LOG_FILE_PATH:/app/logs/fiap-x-user.log}
   level:
     root: ${LOGGING_LEVEL_ROOT:INFO}
     org.springframework.web: ${LOGGING_LEVEL_SPRING:INFO}
     org.hibernate.SQL: ${LOGGING_LEVEL_SQL:INFO}
     br.com.fiapx.fiapxuser: ${LOGGING_LEVEL_FIAP_X_USER:DEBUG}
 
+# Actuator
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,metrics,prometheus
   endpoint:
     health:
       show-details: always
+      probes:
+        enabled: true
+    prometheus:
+      access: unrestricted
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      environment: ${ENVIRONMENT:local}
+      team: ${METRICS_TEAM:fiapx}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 springdoc:
   api-docs:
