@@ -15,7 +15,9 @@ import br.com.fiapx.fiapxuser.application.usecase.queries.getbyemail.GetUserByEm
 import br.com.fiapx.fiapxuser.application.usecase.queries.getbyid.GetUserByIdQuery
 import br.com.fiapx.fiapxuser.application.usecase.queries.getbyid.GetUserByIdUseCase
 import br.com.fiapx.fiapxuser.domain.common.Paged
+import jakarta.validation.constraints.Email
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -29,6 +31,7 @@ import java.util.UUID
 
 @RestController
 @RequestMapping("api/users")
+@Validated
 class UserController(
     private val createUserUseCase: CreateUserUseCase,
     private val updateUserUseCase: UpdateUserUseCase,
@@ -85,7 +88,7 @@ class UserController(
     }
 
     @GetMapping("/by-email/{email}")
-    fun getByEmail(@PathVariable email: String): ResponseEntity<UserAuthResponse> {
+    fun getByEmail(@PathVariable @Email(message = "Formato de e-mail inválido") email: String): ResponseEntity<UserAuthResponse> {
         val user = getUserByEmailUseCase.execute(GetUserByEmailQuery(email))
         return if (user != null) ResponseEntity.ok(UserMapper.toAuthResponse(user))
         else ResponseEntity.notFound().build()
