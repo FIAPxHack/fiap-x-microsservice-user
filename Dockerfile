@@ -21,6 +21,9 @@ RUN mvn clean package -DskipTests -B
 FROM base AS final
 WORKDIR /app
 
+# Cria diretório para logs
+RUN mkdir -p /app/logs
+
 # Copia o jar gerado
 COPY --from=build /src/target/*.jar app.jar
 

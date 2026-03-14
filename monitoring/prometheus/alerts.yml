@@ -1,0 +1,29 @@
+groups:
+  - name: user-service-alerts
+    rules:
+      - alert: UserServiceDown
+        expr: up{job="user-service"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "User service indisponível"
+          description: "O endpoint /actuator/prometheus do user service não respondeu por mais de 1 minuto."
+
+      - alert: UserHigh5xxRate
+        expr: sum(rate(http_server_requests_seconds_count{job="user-service",status=~"5.."}[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "User service com taxa alta de 5xx"
+          description: "O user service está retornando mais de 1 resposta 5xx por segundo nos últimos 5 minutos."
+
+      - alert: UserHighJvmHeapUsage
+        expr: (jvm_memory_used_bytes{job="user-service",area="heap"} / jvm_memory_max_bytes{job="user-service",area="heap"}) > 0.85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "User service com uso alto de heap"
+          description: "A heap JVM do user service está acima de 85% por mais de 5 minutos."
